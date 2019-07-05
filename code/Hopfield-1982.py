@@ -7,55 +7,46 @@ Created on Fri Jul  5 10:14:33 2019
 """
 
 import numpy as np
-import matplotlib as plt
-from update import *
+import matplotlib.pyplot as plt
+from matplotlib import colors
+from matplotlib.ticker import PercentFormatter
+from simulation import *
 
 # number of neurons in the network
 N = 30
 
 # number of stored states
-n = 3
+n = 5
 n = int(n)
 
-# memory states (each row is a stored state)
-M = np.zeros((n, N))
 
-# state vector V 
-V = np.zeros(n)
-
-# weight matrix T
-T = np.zeros((N, N))
 
 # number of simulations
 s = 100
 
-# number of steps
+# number of iterations
+x = 1000
 
 
-# radomly generate memory states
-for k in range(n):
-    M[k] = np.random.randint(2, size = N)
-    
-# set weight matrix according to memory states
-for k in range(n): # go through each memory state
-    for i in range(N):
-        for j in range(N):
-            T[i, j] += (2 * M[k, i] - 1) * (2 * M[k, j] - 1)
-T /= N
-np.fill_diagonal(T, 0)
+'''
+For reconstructing histograms in Fig. 2. Network initialised at a memory state.
+'''
+#Nerr = np.zeros(s)
+#for k in range(s):
+#    Nerr[k] = runsim(N, n, x)
+#
+#plt.hist(Nerr, density = True, bins = range(0, N + 1))
+#plt.show
 
-print(M)
-#print(T)
 
-# radom initial state of V
-V = np.random.randint(2, size = N)
+'''
+Network initialised at radom state. Output is the ratio of trials that ended at an assigned memory/
+'''
+counter = 0
+for k in range(s):
+    if runsim(N, n, x, True) == 0:
+        counter += 1
+counter /= s
+print(counter)
 
-print(V)
 
-for k in range(5):
-    V = update(V, T)
-
-print(V)
-
-        
-        
