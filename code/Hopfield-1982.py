@@ -31,22 +31,25 @@ x = 1000
 '''
 For reconstructing histograms in Fig. 2. Network initialised at a memory state.
 '''
-#Nerr = np.zeros(s)
-#for k in range(s):
-#    Nerr[k] = runsim(N, n, x)
-#
-#plt.hist(Nerr, density = True, bins = range(0, N + 1))
-#plt.show
+Nerr = np.zeros(s)
+for k in range(s):
+    Nerr[k] = runsim(N, n, x)
 
+fig2 = plt.figure()
+
+plt.hist(Nerr, density = True, bins = range(0, N + 1))
+plt.show
+
+fig2.savefig("Fig 2.pdf", bbox_inches='tight')
 
 '''
 Network initialised at radom state. Output is the ratio of trials that ended at an assigned memory/
 '''
-counter = 0
-for k in range(s):
-    if runsim(N, n, x, True) == 0:
-        counter += 1
-counter /= s
-print(counter)
+#counter = 0
+#for k in range(s):
+#    if runsim(N, n, x, True) == 0:
+#        counter += 1
+#counter /= s
+#print(counter)
 
 
