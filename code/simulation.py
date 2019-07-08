@@ -40,20 +40,22 @@ def update(state_s0, weights):
     
     return state_s1
 
-def runsim(neuron, state, iteration, radominit = False):
-    # memory states (each row is a stored state)
+def make_states(neuron, state):
+    # memory states (each row is a memory state)
     M = np.zeros((state, neuron))
-    
-    # state vector V 
-    V = np.zeros(state)
-    
-    # weight matrix T
-    T = np.zeros((neuron, neuron))
     
     # radomly generate memory states
     for k in range(state):
         M[k] = np.random.randint(2, size = neuron)
-        
+    return M
+
+def make_weights(M):
+    state = M.shape[0]
+    neuron = M.shape[1]
+    
+    # weight matrix T
+    T = np.zeros((neuron, neuron))
+            
     # set weight matrix according to memory states
     for k in range(state): # go through each memory state
         for i in range(neuron):
@@ -62,12 +64,27 @@ def runsim(neuron, state, iteration, radominit = False):
     T /= neuron
     np.fill_diagonal(T, 0)
     
-    if radominit:
+    return T
+    
+def initialize(M, T, mode):
+    state = M.shape[0]
+    neuron = M.shape[1]
+    
+    # state vector V 
+    V = np.zeros(neuron)
+    
+    if mode == "random":
         # radom initial state of V
         V = np.random.randint(2, size = neuron)
-    else:
+    elif mode == "nominal":
         # initialise at a nominal memory state
         V = M[0]
+    
+    return V
+
+def evolve(M, T, V, x):
+    state = M.shape[0]
+    neuron = M.shape[1]
     
     # network evolve    
     errorcount = np.zeros(state)
@@ -77,26 +94,16 @@ def runsim(neuron, state, iteration, radominit = False):
         i += 1
         V1 = update(V, T)
         
-        if radominit:
-            for k in range(state):
-                errorcount[k] = np.sum(abs(M[k] - V1))
-#            print(np.amin(errorcount))
-#            print(np.amax(errorcount))
-#            print()
-            minimumerror = min(np.amin(errorcount), (neuron - np.amax(errorcount)))
-            
-        else:
-            error = np.sum(abs(M[0] - V1))
-            errorhistory.append(error)
+#        if radominit:
+#            for k in range(state):
+#                errorcount[k] = np.sum(abs(M[k] - V1))
+#            minimumerror = min(np.amin(errorcount), (neuron - np.amax(errorcount)))
+#            
+#        else:
+#            error = np.sum(abs(M[0] - V1))
+#            errorhistory.append(error)
         
-    #    if (V1 == V).all():
-    #        V = V1
-    #        break
         V = V1
-        if i == iteration:
+        if i == x:
             break
-#    print(errorhistory)
-    if radominit:
-        return minimumerror
-    else:
-        return errorhistory[-1]
+    return V
