@@ -23,14 +23,15 @@ from simulation import *
 #
 # number of simulations
 s = 100
-#
-## number of iterations
-#'''
-#ONE neuron is updated per iteration.
-#
-#'''
-#x = 1000
-#
+
+
+# number of iterations
+'''
+ONE neuron is updated per iteration.
+
+'''
+x = 1000
+
 
 '''
 For reconstructing histograms in Fig. 2. Network initialised at a nominal memory state.
