@@ -3,7 +3,7 @@
 """
 Created on Fri Jul  5 10:14:33 2019
 
-@author: sebw
+@author: sebw, nuest
 """
 
 import numpy as np
@@ -14,13 +14,14 @@ from matplotlib.figure import figaspect
 
 from simulation import *
 
-## number of neurons in the network
-#N = 100
-#
-## number of stored states
+# number of neurons in the network
+N = 100
+
+# number of stored states
 #n = 5
-#n = int(n)
-#
+#n = 10
+#n = 15
+
 # number of simulations
 s = 100
 
@@ -28,7 +29,6 @@ s = 100
 # number of iterations
 '''
 ONE neuron is updated per iteration.
-
 '''
 x = 1000
 
@@ -41,7 +41,7 @@ Nerr2 = np.zeros(s)
 Nerr3 = np.zeros(s)
 
 for k1 in range(s):
-    M = make_states(100, 5)
+    M = make_states(N, 5)
     T = make_weights(M)
     V = initialize(M, T, "nominal")
     V = evolve(M, T, V, x)
@@ -54,7 +54,7 @@ for k1 in range(s):
     Nerr1[k1] = error
 
 for k1 in range(s):
-    M = make_states(100, 10)
+    M = make_states(N, 10)
     T = make_weights(M)
     V = initialize(M, T, "nominal")
     V = evolve(M, T, V, x)
@@ -67,7 +67,7 @@ for k1 in range(s):
     Nerr2[k1] = error
     
 for k1 in range(s):
-    M = make_states(100, 15)
+    M = make_states(N, 15)
     T = make_weights(M)
     V = initialize(M, T, "nominal")
     V = evolve(M, T, V, x)
@@ -80,44 +80,31 @@ for k1 in range(s):
     Nerr3[k1] = error
     
     
-w, h = figaspect(4/5)
+w, h = figaspect(1/1)
 fig2, (ax1, ax2, ax3) = plt.subplots(3, sharex = True, figsize=(w,h))
 
-ax1.hist(Nerr1, density = True, bins = range(0, 61))
-ax1.text(0.83, 0.5, '$n=5$\n$N=100$', transform=ax1.transAxes, bbox=dict(fc="none"))
-ax2.hist(Nerr2, density = True, bins = range(0, 61))
-ax2.text(0.83, 0.5, '$n=10$\n$N=100$', transform=ax2.transAxes, bbox=dict(fc="none"))
-ax3.hist(Nerr3, density = True, bins = range(0, 61))
-ax3.text(0.83, 0.5, '$n=15$\n$N=100$', transform=ax3.transAxes, bbox=dict(fc="none"))
-plt.xlabel("$N_{err}$")
+bins = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 20, 30, 40, 50]
+
+hist1, bins1 = np.histogram(Nerr1, density = True, bins = bins)
+width = 0.7 * (bins[1] - bins[0])
+ax1.bar(bins[:-1], hist1, align='center', width = width, color = 'white', edgecolor = 'black', hatch = "////////")
+ax2.set_yticks([0.5, 1.0])
+ax1.text(0.2, 0.5, '$n = 5$\n$N = 100$', transform = ax1.transAxes)
+
+hist2, bins2 = np.histogram(Nerr2, density = True, bins = bins)
+ax2.bar(bins[:-1], hist2, align='center', width = width, color = 'white', edgecolor = 'black', hatch = "////////")
+ax2.set_yticks([0.2, 0.5])
+ax2.text(0.2, 0.5, '$n = 10$\n$N = 100$', transform = ax2.transAxes)
+
+hist3, bins3 = np.histogram(Nerr3, density = True, bins = bins)
+ax3.bar(bins3[:-1], hist3, align='center', width = width, color = 'white', edgecolor = 'black', hatch = "////////")
+ax3.set_xticks(bins[:-1])
+ax3.set_yticks([0.1, 0.2])
+ax3.set_xticklabels(["", "", "", "3", "", "", "6", "", "", "9", "        10-19", "20-29", "30-39", "40-49", ">49"])
+ax3.text(0.2, 0.5, '$n = 15$\n$N = 100$', transform = ax3.transAxes)
+
+plt.xlabel("$N_{err}$ = Number of Errors in State")
 ax2.set(ylabel = "Probability")
 
 
 fig2.savefig("Fig 2.pdf")
-
-
-
-'''
-Network initialised at radom state. Output is the ratio of trials that ended at an assigned memory state with no error.
-'''
-#counter = 0
-#for k1 in range(s):
-#    M = make_states(N, n)
-#    T = make_weights(M)
-#    V = initialize(M, T, "random")
-#    V = evolve(M, T, V, x)
-#    
-#    state = M.shape[0]
-#    neuron = M.shape[1]
-#
-#    errorcount = np.zeros(state)
-#    for k2 in range(state):
-#        errorcount[k2] = np.sum(abs(M[k2] - V))
-#    minimumerror = min(np.amin(errorcount), (neuron - np.amax(errorcount)))
-#    
-#    if minimumerror == 0:
-#        counter += 1
-#counter /= s
-#print(counter)
-
-
