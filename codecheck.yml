@@ -1,3 +1,19 @@
 ---
+version: https://codecheck.org.uk/spec/config/1.0
+
 manifest:
-  - file: Fig 2.pdf
+  - file: "code/Fig 2.pdf"
+    comment: FIG 2 of the artiple (page 2557)
+
+paper:
+  title: "Neural networks and physical systems with emergent collective computational abilities"
+  authors:
+    - name: J J Hopfield
+    # code contributors: https://github.com/EPFL-LCN/neuronaldynamics-exercises
+    - name: Wulfram Gerstner
+      ORCID: https://orcid.org/0000-0002-4344-2189
+    - name: Werner M. Kistler
+    - name: Richard Naud
+      ORCID: https://orcid.org/0000-0001-7383-3095
+    - name: Liam Paninski 
+  reference: https://doi.org/10.1073/pnas.79.8.2554
