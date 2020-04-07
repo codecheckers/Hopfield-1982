@@ -17,3 +17,12 @@ paper:
       ORCID: https://orcid.org/0000-0001-7383-3095
     - name: Liam Paninski 
   reference: https://doi.org/10.1073/pnas.79.8.2554
+
+codechecker:
+  - name: Daniel Nüst
+    ORCID: 0000-0002-0024-5046
+
+report: https://doi.org/10.5281/zenodo.3741797
+certificate: 2020-003
+check_time: "2020-04-06"
+repository: https://github.com/codecheckers/Hopfield-1982
