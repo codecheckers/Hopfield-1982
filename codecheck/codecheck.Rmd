@@ -1,0 +1,172 @@
+---
+author: "Codechecker: Daniel Nüst, Opening Reproducible Research (o2r, https://o2r.info)"
+output:
+  pdf_document:
+    toc: FALSE
+header-includes:
+  - \usepackage{float}
+---
+
+```{r logo, echo = FALSE, message=FALSE, fig.align='center', out.width='0.3\\linewidth', fig.pos='H'}
+temp <- tempfile(fileext = ".pdf")
+download.file(url = "https://codecheck.org.uk/img/codecheck_logo.pdf", destfile = temp)
+knitr::include_graphics(temp)
+```
+
+## Prerequisites
+
+I'm starting this code check at revision `bc206776feb05765d9844dbf90bcf4877d652a13` of the git repository [https://github.com/codecheckers/Hopfield-1982](https://github.com/codecheckers/Hopfield-1982).
+There is no repository created by the author; the code was compiled from publicly available resources by [Yuhao Wang](https://github.com/sebwyh), with some adjustments by me to closer match the styling of the created figures.
+
+- `README` file exists
+- `LICENSE` file exists
+- `codecheck.yml` with manifest, seems to be valid on manual inspection.
+
+```{r read_codecheck_yaml, message=FALSE, warning=FALSE, include=FALSE}
+library("here") # will start one level up because there is a .git
+library("yaml")
+codecheck_yaml = yaml::read_yaml(here::here("codecheck.yml"))
+```
+
+```{r url_hack,include=FALSE}
+## Temporary hack to make URL
+url_it = function(url) {
+  url = sub("<", "\\\\url{", url)
+  url = sub(">", "}", url)
+  url
+}
+```
+
+---
+title: "`r paste("CODECHECK certificate", codecheck_yaml$certificate)`"
+# somehow subtitle in second code chunk does not work
+# subtitle: "`r codecheck_yaml$report`"
+date: "Report DOI: `r codecheck_yaml$report`` \\newline Check time: `r codecheck_yaml$check_time`"
+---
+
+## The CODECHECK
+
+This report checks the code of the article _`r codecheck_yaml$paper$title`_ (`r codecheck_yaml$paper$reference`).
+See section [Notes](notes) for details about running the code.
+
+**The CODECHECK was successful**.
+The created figure `Fig 2.pdf` is visually very close to the one in the paper.
+The same patterns in the data are there.
+The differences in the numbers could stem from computing artefacts.
+
+The reproduction of the figure from the manuscript was pretty straightforward based on the file `Hopfield-1982.py` despite the very minimal `README.md`.
+Since I am not familiar with the used software stack, it required some back and forth to identify the required Python libraries.
+The code only runs a couple of minutes on my machine.
+
+\clearpage
+
+# Codechecker notes {#notes}
+
+The workflow in the directory `code/` was tested with Python 3.7 in a virtual environment created with `mkvirtualenv --python $(which python3) hopfield`.
+The environment was exported to `requirements.txt` and can now be recreated from that file.
+The following commands create and prepare the environment.
+
+```bash
+cd codecheck
+mkvirtualenv --python $(which python3) hopfield
+pip install -r requirements.txt
+```
+
+Then, we can use the Makefile to run copy the input files to this directory and run the workflow.
+
+```bash
+cd codecheck
+make codecheck
+```
+
+The used machine:
+
+\footnotesize
+
+```{bash machine, echo=FALSE, comment=""}
+echo "Kernel:"
+uname -a
+echo "" && echo "Distro:"
+lsb_release -a
+echo "" && echo "Python:"
+python3 --version
+```
+
+\normalsize
+
+The following files are uploaded to a deposit on Zenodo from the directory `codecheck/` in the repository:
+
+```{r deposit_files, echo=FALSE}
+check_files <- list.files(here("codecheck"), full.names = TRUE)
+basename(check_files)
+```
+
+```{r zenodo_deposit, message=FALSE, warning=FALSE, include=FALSE, eval=FALSE}
+# upload files to deposit, manual execution of statements
+library("zen4R")
+
+zenodo <- ZenodoManager$new(
+   token = zenodoToken, 
+   logger = "DEBUG"
+)
+
+# get draft (manually created)
+deposit_draft <- zenodo$getDepositionByConceptDOI("10.5281/zenodo.3741797")
+
+# add metadata
+deposit_draft$setPublicationType("report")
+deposit_draft$setCommunities(communities = c("codecheck"))
+deposit_draft$setTitle(paste("CODECHECK certificate", codecheck_yaml$certificate))
+# could also add codechecker as author
+# deposit_draft$addContributor(), but need to split firstname/lastname, handle optiona ORCID etc.
+deposit_draft$setLanguage(language = "eng")
+deposit_draft$setKeywords(keywords = c("CODECHECK"))
+deposit_draft$setNotes(notes = c("See file LICENSE for license of the contained code. The report document codecheck.pdf is published under CC-BY 4.0 International."))
+deposit_draft$setAccessRight(accessRight = "open")
+deposit_draft$setLicense(licenseId = "other-open")
+deposit_draft$addRelatedIdentifier(relation = "isSupplementTo", identifier = codecheck_yaml$repository)
+deposit_draft$addRelatedIdentifier(relation = "isSupplementTo", identifier = codecheck_yaml$paper$reference)
+
+# add contributors manually
+deposit_draft$addContributor(firstname = "J J",
+                             lastname = "Hopfield",
+                             type = "Researcher")
+deposit_draft$addContributor(firstname = "Wulfram",
+                             lastname = "Gerstner",
+                             type = "Researcher",
+                             orcid = "0000-0002-4344-2189")
+deposit_draft$addContributor(firstname = "Werner M.",
+                             lastname = "Kistler",
+                             type = "Researcher")
+deposit_draft$addContributor(firstname = "Richard",
+                             lastname = "Naud",
+                             type = "Researcher",
+                             orcid = "0000-0001-7383-3095")
+deposit_draft$addContributor(firstname = "Liam",
+                             lastname = "Paninski",
+                             type = "Researcher")
+
+# delete existing files, then upload files
+deposit_files <- zenodo$getFiles(deposit_draft$id)
+for(file in deposit_files) {
+  zenodo$deleteFile(fileId = file$id, recordId = deposit_draft$id)
+}
+for (file in check_files) {
+  zenodo$uploadFile(path = file, recordId = deposit_draft$id)
+}
+
+deposit_draft <- zenodo$depositRecord(deposit_draft)
+# 'publish' done manually on Zenodo after final check
+```
+
+\clearpage
+
+Here are the original figure from the directory `code/` and the reproduced figure from the directory `codecheck/`:
+
+```{r fig2_original, echo = FALSE, message=FALSE, fig.align='center', fig.cap='Original figure', out.width='0.6\\linewidth'}
+knitr::include_graphics("../code/Fig 2.pdf")
+```
+
+```{r fig2_checked, echo = FALSE, message=FALSE, fig.align='center', fig.cap='Original figure', out.width='0.6\\linewidth', fig.pos='H'}
+knitr::include_graphics("../codecheck/Fig 2.pdf")
+```
