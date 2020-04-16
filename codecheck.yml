@@ -2,12 +2,12 @@
 version: https://codecheck.org.uk/spec/config/1.0
 
 manifest:
-  - file: "code/Fig 2.pdf"
+  - file: "code/Fig 2.pdf"      # need quotes for spaces in filenames?
     comment: FIG 2 of the article (page 2557)
 
 paper:
-  title: "Neural networks and physical systems with emergent
-    collective computational abilities"
+  title: Neural networks and physical systems with emergent
+    collective computational abilities
   authors:
     - name: J J Hopfield
     # code contributors: https://github.com/EPFL-LCN/neuronaldynamics-exercises
