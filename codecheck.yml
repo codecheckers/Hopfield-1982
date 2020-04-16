@@ -3,7 +3,7 @@ version: https://codecheck.org.uk/spec/config/1.0
 
 manifest:
   - file: "code/Fig 2.pdf"
-    comment: FIG 2 of the artiple (page 2557)
+    comment: FIG 2 of the article (page 2557)
 
 paper:
   title: "Neural networks and physical systems with emergent
