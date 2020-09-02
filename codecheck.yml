@@ -11,10 +11,10 @@ paper:
     - name: J J Hopfield
     # code contributors: https://github.com/EPFL-LCN/neuronaldynamics-exercises
     - name: Wulfram Gerstner
-      ORCID: https://orcid.org/0000-0002-4344-2189
+      ORCID: 0000-0002-4344-2189
     - name: Werner M. Kistler
     - name: Richard Naud
-      ORCID: https://orcid.org/0000-0001-7383-3095
+      ORCID: 0000-0001-7383-3095
     - name: Liam Paninski 
   reference: https://doi.org/10.1073/pnas.79.8.2554
 
